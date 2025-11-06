@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grachmannico95/mileapp-test-be/internal/config"
@@ -50,27 +51,38 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 }
 
 func (h *AuthHandler) setAuthCookies(c *gin.Context, jwtToken, csrfToken string) {
-	maxAge := int(h.config.JWT.Expiry.Seconds())
+	maxAge := time.Now().Add(h.config.JWT.Expiry)
+	sameSite := map[string]http.SameSite{
+		"SameSite": http.SameSiteDefaultMode,
+		"Lax":      http.SameSiteLaxMode,
+		"Strict":   http.SameSiteStrictMode,
+		"None":     http.SameSiteNoneMode,
+	}
 
-	c.SetCookie(
-		"access_token",
-		jwtToken,
-		maxAge,
-		"/",
-		h.config.Cookie.Domain,
-		h.config.Cookie.Secure,
-		h.config.Cookie.HTTPOnly,
-	)
+	accessTokenCookie := &http.Cookie{
+		Name:     "access_token",
+		Value:    jwtToken,
+		Path:     "/",
+		Domain:   h.config.Cookie.Domain,
+		Expires:  maxAge,
+		HttpOnly: h.config.Cookie.HTTPOnly,
+		Secure:   h.config.Cookie.Secure,
+		SameSite: sameSite[h.config.Cookie.SameSite],
+	}
 
-	c.SetCookie(
-		"csrf_token",
-		csrfToken,
-		maxAge,
-		"/",
-		h.config.Cookie.Domain,
-		h.config.Cookie.Secure,
-		false,
-	)
+	csrfTokenCookie := &http.Cookie{
+		Name:     "csrf_token",
+		Value:    csrfToken,
+		Path:     "/",
+		Domain:   h.config.Cookie.Domain,
+		Expires:  maxAge,
+		HttpOnly: false,
+		Secure:   h.config.Cookie.Secure,
+		SameSite: sameSite[h.config.Cookie.SameSite],
+	}
+
+	http.SetCookie(c.Writer, accessTokenCookie)
+	http.SetCookie(c.Writer, csrfTokenCookie)
 }
 
 func (h *AuthHandler) clearAuthCookies(c *gin.Context) {
