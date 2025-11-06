@@ -87,10 +87,6 @@ func Load() (*Config, error) {
 			HTTPOnly: getEnvAsBool("COOKIE_HTTP_ONLY", true),
 			SameSite: getEnv("COOKIE_SAME_SITE", "Strict"),
 		},
-		RateLimit: RateLimitConfig{
-			Requests: getEnvAsInt("RATE_LIMIT_REQUESTS", 5),
-			Window:   time.Duration(getEnvAsInt("RATE_LIMIT_WINDOW_MINUTES", 15)) * time.Minute,
-		},
 		CORS: CORSConfig{
 			AllowedOrigins:   getEnvAsSlice("CORS_ALLOWED_ORIGINS", []string{"http://localhost:5173"}),
 			AllowedMethods:   getEnvAsSlice("CORS_ALLOWED_METHODS", []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),

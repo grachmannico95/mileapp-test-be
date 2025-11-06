@@ -255,12 +255,14 @@ func TestTaskService_Update_PastDueDate(t *testing.T) {
 	taskService := NewTaskService(mockTaskRepo)
 
 	// Test data
+	futureDate := time.Now().Add(24 * time.Hour)
 	taskID := primitive.NewObjectID()
 	existingTask := &model.Task{
 		ID:          taskID,
 		Title:       "Test Task",
 		Description: "Test Description",
 		Status:      model.TaskStatusPending,
+		DueDate:     &futureDate,
 		Priority:    model.TaskPriorityMedium,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
