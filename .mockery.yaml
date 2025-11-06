@@ -1,0 +1,14 @@
+with-expecter: true
+dir: "mocks"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: "mocks"
+filename: "{{.InterfaceName}}.go"
+packages:
+  github.com/grachmannico95/mileapp-test-be/internal/repository:
+    interfaces:
+      UserRepository:
+      TaskRepository:
+  github.com/grachmannico95/mileapp-test-be/internal/service:
+    interfaces:
+      AuthService:
+      TaskService:
