@@ -6,7 +6,7 @@ This project is a production-ready RESTful API built with the Golang Gin framewo
 A Golang-based REST API that provides:
 - User authentication using JWT tokens and secure cookies
 - Task management with advanced query options (filtering, sorting, pagination)
-- Security features like CSRF protection, rate limiting, and password hashing
+- Security features like CSRF protection and password hashing
 - Comprehensive testing with mocks using Testify and Mockery
 
 ## Design Decision
@@ -16,13 +16,13 @@ A Golang-based REST API that provides:
 - Dependency Injection: Enables loose coupling between components and improves unit testability
 
 ## Strengths of the Module
-- Security-Focused: Includes JWT authentication, CSRF validation, bcrypt password hashing, secure cookies, rate limiting, and HTTP security headers
+- Security-Focused: Includes JWT authentication, CSRF validation, bcrypt password hashing, secure cookies and HTTP security headers
 - Scalable & Maintainable Architecture: Clean Architecture make it easy to add features or change data sources without breaking existing modules
 - Robust Error Handling & Validation: All APIs return consistent error formats with detailed validation feedback
 
 ## Databse Indexes
 - collection `users`
-  - `{ email: 1 }`: Speeds up queries like db.users.find({ email: "user@example.com" }), which are common for authentication or account lookups
+  - `{ email: 1 }`: Speeds up queries for filtering user based on email, which are common for authentication or account lookups
   - `{ unique: true }`: To prevents duplicate user accounts with the same email
 - collecttion `tasks`
   - `{ status: 1 }`: Speeds up queries for filtering task based on status in ascending order
