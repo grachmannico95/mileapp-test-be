@@ -82,7 +82,7 @@ func Load() (*Config, error) {
 			Secret: getEnv("CSRF_SECRET", ""),
 		},
 		Cookie: CookieConfig{
-			Domain:   getEnv("COOKIE_DOMAIN", "localhost"),
+			Domain:   getEnv("COOKIE_DOMAIN", ""),
 			Secure:   getEnvAsBool("COOKIE_SECURE", false),
 			HTTPOnly: getEnvAsBool("COOKIE_HTTP_ONLY", true),
 			SameSite: getEnv("COOKIE_SAME_SITE", "Strict"),
