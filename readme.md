@@ -47,7 +47,7 @@ go run cmd/main.go
 
 ### How to build
 ```
-go build -o bin/api ./cmd/api
+go build -o bin ./cmd
 ```
 
 ### How to generate mock
@@ -59,3 +59,6 @@ mockery
 ```
 go test ./internal/service/... -v
 ```
+
+### API Docs
+The Postman collection is available in the `/docs` directory
