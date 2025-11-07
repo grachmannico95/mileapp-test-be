@@ -112,20 +112,53 @@ func (r *taskRepositoryImpl) Find(ctx context.Context, filters TaskFilters) ([]m
 
 	skip := (page - 1) * limit
 
-	findOptions := options.Find().
-		SetSort(bson.D{{Key: sortField, Value: sortOrder}}).
-		SetSkip(int64(skip)).
-		SetLimit(int64(limit))
-
-	cursor, err := r.collection.Find(ctx, query, findOptions)
-	if err != nil {
-		return nil, 0, err
-	}
-	defer cursor.Close(ctx)
-
 	var tasks []model.Task
-	if err := cursor.All(ctx, &tasks); err != nil {
-		return nil, 0, err
+
+	if sortField == "priority" {
+		pipeline := []bson.M{
+			{"$match": query},
+			{"$addFields": bson.M{
+				"priority_order": bson.M{
+					"$switch": bson.M{
+						"branches": []bson.M{
+							{"case": bson.M{"$eq": []interface{}{"$priority", "low"}}, "then": 1},
+							{"case": bson.M{"$eq": []interface{}{"$priority", "medium"}}, "then": 2},
+							{"case": bson.M{"$eq": []interface{}{"$priority", "high"}}, "then": 3},
+						},
+						"default": 0,
+					},
+				},
+			}},
+			{"$sort": bson.M{"priority_order": sortOrder}},
+			{"$skip": int64(skip)},
+			{"$limit": int64(limit)},
+			{"$project": bson.M{"priority_order": 0}},
+		}
+
+		cursor, err := r.collection.Aggregate(ctx, pipeline)
+		if err != nil {
+			return nil, 0, err
+		}
+		defer cursor.Close(ctx)
+
+		if err := cursor.All(ctx, &tasks); err != nil {
+			return nil, 0, err
+		}
+	} else {
+		findOptions := options.Find().
+			SetSort(bson.D{{Key: sortField, Value: sortOrder}}).
+			SetSkip(int64(skip)).
+			SetLimit(int64(limit))
+
+		cursor, err := r.collection.Find(ctx, query, findOptions)
+		if err != nil {
+			return nil, 0, err
+		}
+		defer cursor.Close(ctx)
+
+		if err := cursor.All(ctx, &tasks); err != nil {
+			return nil, 0, err
+		}
 	}
 
 	if tasks == nil {
