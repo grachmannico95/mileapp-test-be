@@ -10,7 +10,9 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	User *UserResponse `json:"user"`
+	User        *UserResponse `json:"user"`
+	AccessToken string        `json:"access_token,omitempty"`
+	CSRFToken   string        `json:"csrf_token,omitempty"`
 }
 
 type UserResponse struct {

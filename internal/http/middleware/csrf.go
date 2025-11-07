@@ -27,17 +27,19 @@ func CSRFMiddleware(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
-		cookieToken, err := c.Cookie("csrf_token")
-		if err != nil {
-			c.JSON(http.StatusForbidden, dto.ErrorResponse("csrf token missing in cookie"))
-			c.Abort()
-			return
-		}
+		if cfg.Server.AuthCookie {
+			cookieToken, err := c.Cookie("csrf_token")
+			if err != nil {
+				c.JSON(http.StatusForbidden, dto.ErrorResponse("csrf token missing in cookie"))
+				c.Abort()
+				return
+			}
 
-		if headerToken != cookieToken {
-			c.JSON(http.StatusForbidden, dto.ErrorResponse("csrf token mismatch"))
-			c.Abort()
-			return
+			if headerToken != cookieToken {
+				c.JSON(http.StatusForbidden, dto.ErrorResponse("csrf token mismatch"))
+				c.Abort()
+				return
+			}
 		}
 
 		if !util.ValidateCSRFToken(headerToken, cfg.CSRF.Secret) {

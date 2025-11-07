@@ -21,8 +21,9 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port    string
-	GinMode string
+	Port       string
+	GinMode    string
+	AuthCookie bool
 }
 
 type MongoDBConfig struct {
@@ -66,8 +67,9 @@ func Load() (*Config, error) {
 
 	config := &Config{
 		Server: ServerConfig{
-			Port:    getEnv("PORT", "8080"),
-			GinMode: getEnv("GIN_MODE", "debug"),
+			Port:       getEnv("PORT", "8080"),
+			GinMode:    getEnv("GIN_MODE", "debug"),
+			AuthCookie: getEnvAsBool("AUTH_COOKIE", false),
 		},
 		MongoDB: MongoDBConfig{
 			URI:      getEnv("MONGODB_URI", "mongodb://localhost:27017"),
