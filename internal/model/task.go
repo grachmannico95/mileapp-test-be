@@ -27,7 +27,7 @@ type Task struct {
 	Title       string             `bson:"title" json:"title"`
 	Description string             `bson:"description" json:"description"`
 	Status      TaskStatus         `bson:"status" json:"status"`
-	Priority    TaskPriority       `bson:"priority" json:"priority"`
+	Priority    int                `bson:"priority" json:"priority"`
 	DueDate     *time.Time         `bson:"due_date,omitempty" json:"due_date,omitempty"`
 	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
 	UpdatedAt   time.Time          `bson:"updated_at" json:"updated_at"`
@@ -39,7 +39,7 @@ func NewTask(title, description string, status TaskStatus, priority TaskPriority
 		Title:       title,
 		Description: description,
 		Status:      status,
-		Priority:    priority,
+		Priority:    PriorityStringToInt(string(priority)),
 		DueDate:     dueDate,
 		CreatedAt:   now,
 		UpdatedAt:   now,
@@ -60,4 +60,30 @@ func IsValidPriority(priority string) bool {
 		return true
 	}
 	return false
+}
+
+func PriorityStringToInt(priority string) int {
+	switch TaskPriority(priority) {
+	case TaskPriorityLow:
+		return 1
+	case TaskPriorityMedium:
+		return 2
+	case TaskPriorityHigh:
+		return 3
+	default:
+		return 0
+	}
+}
+
+func PriorityIntToString(priority int) string {
+	switch priority {
+	case 1:
+		return string(TaskPriorityLow)
+	case 2:
+		return string(TaskPriorityMedium)
+	case 3:
+		return string(TaskPriorityHigh)
+	default:
+		return ""
+	}
 }

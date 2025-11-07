@@ -79,7 +79,7 @@ func ToTaskResponse(task *model.Task) TaskResponse {
 		Title:       task.Title,
 		Description: task.Description,
 		Status:      string(task.Status),
-		Priority:    string(task.Priority),
+		Priority:    model.PriorityIntToString(task.Priority),
 		DueDate:     task.DueDate,
 		CreatedAt:   task.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
 		UpdatedAt:   task.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),

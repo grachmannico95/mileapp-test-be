@@ -141,7 +141,7 @@ func (s *taskServiceImpl) Update(ctx context.Context, id string, req dto.UpdateT
 	}
 
 	if req.Priority != "" {
-		task.Priority = model.TaskPriority(req.Priority)
+		task.Priority = model.PriorityStringToInt(req.Priority)
 	}
 
 	if req.DueDate != nil && req.DueDate.Time != *task.DueDate {

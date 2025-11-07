@@ -36,7 +36,7 @@ func TestTaskService_Create_Success(t *testing.T) {
 			return task.Title == req.Title &&
 				task.Description == req.Description &&
 				task.Status == model.TaskStatusPending &&
-				task.Priority == model.TaskPriorityHigh
+				task.Priority == 3
 		})).
 		Return(nil).
 		Once()
@@ -85,7 +85,7 @@ func TestTaskService_GetByID_Success(t *testing.T) {
 		Title:       "Test Task",
 		Description: "Test Description",
 		Status:      model.TaskStatusPending,
-		Priority:    model.TaskPriorityMedium,
+		Priority:    2,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -163,7 +163,7 @@ func TestTaskService_List_Success(t *testing.T) {
 			Title:       "Task 1",
 			Description: "Description 1",
 			Status:      model.TaskStatusPending,
-			Priority:    model.TaskPriorityHigh,
+			Priority:    3,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -172,7 +172,7 @@ func TestTaskService_List_Success(t *testing.T) {
 			Title:       "Task 2",
 			Description: "Description 2",
 			Status:      model.TaskStatusPending,
-			Priority:    model.TaskPriorityMedium,
+			Priority:    2,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		},
@@ -212,7 +212,7 @@ func TestTaskService_Update_Success(t *testing.T) {
 		Title:       "Old Title",
 		Description: "Old Description",
 		Status:      model.TaskStatusPending,
-		Priority:    model.TaskPriorityLow,
+		Priority:    1,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -233,7 +233,7 @@ func TestTaskService_Update_Success(t *testing.T) {
 		Update(mock.Anything, mock.MatchedBy(func(task *model.Task) bool {
 			return task.Title == "New Title" &&
 				task.Status == model.TaskStatusCompleted &&
-				task.Priority == model.TaskPriorityHigh
+				task.Priority == 3
 		})).
 		Return(nil).
 		Once()
@@ -246,7 +246,7 @@ func TestTaskService_Update_Success(t *testing.T) {
 	assert.NotNil(t, updatedTask)
 	assert.Equal(t, "New Title", updatedTask.Title)
 	assert.Equal(t, model.TaskStatusCompleted, updatedTask.Status)
-	assert.Equal(t, model.TaskPriorityHigh, updatedTask.Priority)
+	assert.Equal(t, 3, updatedTask.Priority)
 }
 
 func TestTaskService_Update_PastDueDate(t *testing.T) {
@@ -263,7 +263,7 @@ func TestTaskService_Update_PastDueDate(t *testing.T) {
 		Description: "Test Description",
 		Status:      model.TaskStatusPending,
 		DueDate:     &futureDate,
-		Priority:    model.TaskPriorityMedium,
+		Priority:    2,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
