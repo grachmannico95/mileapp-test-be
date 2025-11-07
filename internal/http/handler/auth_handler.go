@@ -37,11 +37,20 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	response := dto.LoginResponse{
-		User: dto.ToUserResponse(user),
+	response := dto.LoginResponse{}
+	if h.config.Server.AuthCookie {
+		response = dto.LoginResponse{
+			User: dto.ToUserResponse(user),
+		}
+		h.setAuthCookies(c, jwtToken, csrfToken)
+	} else {
+		response = dto.LoginResponse{
+			User:        dto.ToUserResponse(user),
+			AccessToken: jwtToken,
+			CSRFToken:   csrfToken,
+		}
 	}
 
-	h.setAuthCookies(c, jwtToken, csrfToken)
 	c.JSON(http.StatusOK, dto.SuccessResponse("login successful", response))
 }
 
